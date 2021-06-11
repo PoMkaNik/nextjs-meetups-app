@@ -20,8 +20,36 @@ const DUMMY_MEETUPS = [
   },
 ];
 
-const HomePage = () => {
-  return <MeetupList meetups={DUMMY_MEETUPS} />;
+const HomePage = (props) => {
+  return <MeetupList meetups={props.meetups} />;
 };
+
+// for static generation -> get fetched data before
+export async function getStaticProps() {
+  // can run server side code -> never run on clients
+  // ...await...
+  // need to return object
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+    revalidate: 10,
+  };
+}
+
+// server-side rendering
+// export async function getServerSideProps() {
+//   // can run server side code -> never run on clients
+//   // can use credentials
+//   // fetch data
+//   // ...
+//   // need to return object
+
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS,
+//     },
+//   };
+// }
 
 export default HomePage;
