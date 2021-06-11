@@ -37,3 +37,11 @@
 .header a.active {
   color: white;
 }
+
+.header .logo a,
+.header .logo a:hover,
+.header .logo a:active,
+.header .logo a.active {
+  font-size: 2rem;
+  color: white;
+}
