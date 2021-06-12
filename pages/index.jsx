@@ -1,24 +1,8 @@
 import React from 'react';
 import MeetupList from '../components/meetups/MeetupList';
 
-const DUMMY_MEETUPS = [
-  {
-    id: 'm1',
-    title: 'Meetup #1',
-    image:
-      'https://images.pexels.com/photos/3997758/pexels-photo-3997758.jpeg?auto=compress&h=627&w=1200',
-    address: 'Some address 5, 12345 Some City',
-    description: 'This is the #1 meetup!',
-  },
-  {
-    id: 'm2',
-    title: 'Meetup #2',
-    image:
-      'https://images.pexels.com/photos/735428/pexels-photo-735428.jpeg?jpegauto=compress&h=627&w=1200',
-    address: 'Some address 5, 22345 Some City',
-    description: 'This is the #2 meetup!',
-  },
-];
+import { MongoClient } from 'mongodb';
+import { DB_USER, DB_PASSWORD } from './api/config';
 
 const HomePage = (props) => {
   return <MeetupList meetups={props.meetups} />;
@@ -27,13 +11,27 @@ const HomePage = (props) => {
 // for static generation -> get fetched data before
 export async function getStaticProps() {
   // can run server side code -> never run on clients
-  // ...await...
+  const client = await MongoClient.connect(
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2lksn.mongodb.net/meetups?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+  );
+  const db = client.db();
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
+
   // need to return object
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        ...meetup,
+        _id: null, // need to remove _id from ...meetups
+        id: meetup._id.toString(),
+      })),
     },
-    revalidate: 10,
+    revalidate: 1,
   };
 }
 

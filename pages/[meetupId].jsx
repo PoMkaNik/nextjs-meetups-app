@@ -1,6 +1,8 @@
-import React, { Fragment } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 import MeetupDetail from '../components/meetups/MeetupDetail';
+
+import { MongoClient, ObjectId } from 'mongodb';
+import { DB_USER, DB_PASSWORD } from './api/config';
 
 const DUMMY_MEETUPS = [
   {
@@ -22,16 +24,21 @@ const DUMMY_MEETUPS = [
 ];
 
 const MeetupDetails = (props) => {
-  const router = useRouter();
-
-  const meetupId = router.query.meetupId;
-
-  const meetupData = DUMMY_MEETUPS.find((meetup) => meetup.id === meetupId);
-
   return <MeetupDetail {...props.meetupData} />;
 };
 
 export async function getStaticPaths() {
+  const client = await MongoClient.connect(
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2lksn.mongodb.net/meetups?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+  );
+  const db = client.db();
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
+  client.close();
+
   return {
     // FALSE - if all potential path in PATHS property
     // and if user request path that you have but not include in PATHS ->
@@ -39,31 +46,38 @@ export async function getStaticPaths() {
     // if true - what is not included in PATHS -> will be generated on the fly
     // good solution for only popular pages pre-generation
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: 'm1',
-        },
+    paths: meetups.map((meetup) => ({
+      params: {
+        meetupId: meetup._id.toString(),
       },
-      {
-        params: {
-          meetupId: 'm2',
-        },
-      },
-    ],
+    })),
   };
 }
 
 export async function getStaticProps(context) {
-  // fetch data for a single meetup
-  //...
   const meetupId = context.params.meetupId;
 
-  const meetupData = DUMMY_MEETUPS.find((meetup) => meetup.id === meetupId);
+  // fetch data for a single meetup
+  const client = await MongoClient.connect(
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2lksn.mongodb.net/meetups?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+  );
+  const db = client.db();
+  const meetupsCollection = db.collection('meetups');
+
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
+  });
+
+  client.close();
 
   return {
     props: {
-      meetupData,
+      meetupData: {
+        ...selectedMeetup,
+        id: selectedMeetup._id.toString(),
+        _id: null,
+      },
     },
   };
 }

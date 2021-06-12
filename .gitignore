@@ -1,2 +1,4 @@
 /node_modules
 /.next
+/pages/api/config.js
+/.vscode
