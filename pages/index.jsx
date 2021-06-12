@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import Head from 'next/head';
 import MeetupList from '../components/meetups/MeetupList';
 
 import { MongoClient } from 'mongodb';
 import { DB_USER, DB_PASSWORD } from './api/config';
 
 const HomePage = (props) => {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>React Meetups</title>
+        <meta
+          name='description'
+          content='Browse a huge list of highly active React meetups'
+        />
+      </Head>
+      <MeetupList meetups={props.meetups} />;
+    </Fragment>
+  );
 };
 
 // for static generation -> get fetched data before
