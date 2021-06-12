@@ -33,9 +33,12 @@ export async function getStaticPaths() {
     // FALSE - if all potential path in PATHS property
     // and if user request path that you have but not include in PATHS ->
     // 404 page will be displayed
-    // if true - what is not included in PATHS -> will be generated on the fly
+    // TRUE - what is not included in PATHS ->
+    // will be generated on the fly
+    // 'BLOCKING' - user will not see anything
+    // until page is ready with all fetched data
     // good solution for only popular pages pre-generation
-    fallback: false,
+    fallback: 'blocking',
     paths: meetups.map((meetup) => ({
       params: {
         meetupId: meetup._id.toString(),
