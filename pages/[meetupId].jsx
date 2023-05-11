@@ -12,14 +12,14 @@ const MeetupDetails = (props) => {
         <title>{props.meetupData.title}</title>
         <meta name='description' content={props.meetupData.description} />
       </Head>
-      <MeetupDetail {...props.meetupData} />;
+      <MeetupDetail {...props.meetupData} />
     </Fragment>
   );
 };
 
 export async function getStaticPaths() {
   const client = await MongoClient.connect(
-    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2lksn.mongodb.net/meetups?retryWrites=true&w=majority`,
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@db-mongodb-nyc1-38303-b0451fe1.mongo.ondigitalocean.com/meetups?authSource=admin&replicaSet=db-mongodb-nyc1-38303&tls=true`,
     { useNewUrlParser: true, useUnifiedTopology: true },
   );
   const db = client.db();
@@ -52,7 +52,7 @@ export async function getStaticProps(context) {
 
   // fetch data for a single meetup
   const client = await MongoClient.connect(
-    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2lksn.mongodb.net/meetups?retryWrites=true&w=majority`,
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@db-mongodb-nyc1-38303-b0451fe1.mongo.ondigitalocean.com/meetups?authSource=admin&replicaSet=db-mongodb-nyc1-38303&tls=true`,
     { useNewUrlParser: true, useUnifiedTopology: true },
   );
   const db = client.db();

@@ -14,6 +14,25 @@ const HomePage = (props) => {
           name='description'
           content='Browse a huge list of highly active React meetups'
         />
+        {/* favicons */}
+        <link
+          rel='apple-touch-icon'
+          sizes='180x180'
+          href='/apple-touch-icon.png'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='32x32'
+          href='/favicon-32x32.png'
+        />
+        <link
+          rel='icon'
+          type='image/png'
+          sizes='16x16'
+          href='/favicon-16x16.png'
+        />
+        <link rel='manifest' href='/site.webmanifest' />
       </Head>
       <MeetupList meetups={props.meetups} />
     </Fragment>
@@ -24,7 +43,7 @@ const HomePage = (props) => {
 export async function getStaticProps() {
   // can run server side code -> never run on clients
   const client = await MongoClient.connect(
-    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2lksn.mongodb.net/meetups?retryWrites=true&w=majority`,
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@db-mongodb-nyc1-38303-b0451fe1.mongo.ondigitalocean.com/meetups?authSource=admin&replicaSet=db-mongodb-nyc1-38303&tls=true`,
     { useNewUrlParser: true, useUnifiedTopology: true },
   );
   const db = client.db();

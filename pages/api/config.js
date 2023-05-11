@@ -1,2 +1,2 @@
 export const DB_USER = 'nextjs';
-export const DB_PASSWORD = 'DBvq5I6CvwD0BdeG'
+export const DB_PASSWORD = '16T8v9nq40fOL53C'
